@@ -13,9 +13,7 @@
 
 Wenn du eine Sicherheitslücke in **Device Sentinel** gefunden hast, melde diese bitte **verantwortungsbewusst und vertraulich**.
 
-Bitte sende eine detaillierte Beschreibung an:
-
-📧 **security@bylickilabs.de**
+Am besten über eine PR
 
 Deine Meldung sollte enthalten:
 - Beschreibung der Schwachstelle
