@@ -1,5 +1,5 @@
-|🛡️ Device Sentinel|
-|---|
+|🛡️ Device Sentinel|[![🔎 Device Sentinel CI](https://github.com/bylickilabs/DeviceSentinel/actions/workflows/main.yml/badge.svg)](https://github.com/bylickilabs/DeviceSentinel/actions/workflows/main.yml)|
+|---|---|
 
 |![DS1](https://github.com/user-attachments/assets/a1251900-a2f5-4414-815d-f8598fa94b77)|
 |---|
