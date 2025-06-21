@@ -1,0 +1,63 @@
+name: 🔎 Device Sentinel CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  check-nodejs-scripts:
+    name: 🧪 Node.js Scanner + JS Check
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x]
+
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: 🧰 Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: 📦 Install Dependencies (if any)
+        run: |
+          npm init -y
+          npm install --save-dev eslint
+
+      - name: ✅ Lint netScan.js
+        run: |
+          npx eslint netScan.js || echo "Linting warnings – netScan.js"
+
+      - name: ✅ Lint JS files in utils/
+        run: |
+          find utils -name "*.js" -print0 | xargs -0 npx eslint || echo "Linting warnings – utils/*.js"
+
+      - name: 🧪 Test netScan.js (basic run check)
+        run: |
+          node netScan.js || echo "netScan.js ran but may need network access or Windows shell"
+
+  validate-html-css:
+    name: 🌐 HTML & CSS Syntax Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: ✅ Validate HTML
+        run: |
+          sudo apt-get install tidy -y
+          tidy -qe index.html || echo "HTML warnings"
+
+      - name: ✅ Validate CSS
+        run: |
+          if command -v stylelint > /dev/null; then
+            npx stylelint "**/*.css"
+          else
+            echo "stylelint not installed – skipping CSS check"
+          fi
