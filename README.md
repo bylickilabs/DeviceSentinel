@@ -34,18 +34,22 @@
 
 ```yarn
 DeviceSentinel/
-├── index.html               # Hauptdashboard (UI)
-├── style.css                # Styling (Dark/Neon)
+├── app.js
+├── import.html
+├── index.html
+├── netScan.js
+├── style.css
 ├── utils/
-│   ├── deviceHandler.js     # USB-Logging & Sessionlogik
-│   ├── whitelist.js         # Whitelistlogik + IO
-│   ├── exporter.js          # CSV & PDF Export
-│   ├── timeline.js          # Timeline-Darstellung
-│   ├── networkScanner.js    # Platzhalter für Netzwerkerkennung
-│   ├── live.js              # Live-Dashboard-Modul
-│   └── vendors.js           # VendorID-Risiko-Liste
-├── app.js                   # Hauptlogik
-├── README.md                # Diese Datei
+│   ├── bluetoothHandler.js
+│   ├── deviceHandler.js
+│   ├── exporter.js
+│   ├── live.js
+│   ├── networkScanner.js
+│   ├── themeHandler.js
+│   ├── timeline.js
+│   ├── vendors.js
+│   └── vendors.js
+├── README.md
 ```
 
 <br>
