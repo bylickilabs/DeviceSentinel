@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Device Sentinel – UI Optimiert</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .group {
+      margin-bottom: 2rem;
+      text-align: left;
+    }
+    .group h2 {
+      margin-bottom: 0.5rem;
+      font-size: 1.2rem;
+      color: #00ffe7;
+      border-bottom: 1px solid #00ffe7;
+      padding-bottom: 0.3rem;
+    }
+    .group button, .group input[type="file"] {
+      display: block;
+      width: 100%;
+      max-width: 480px;
+      margin: 0.5rem 0;
+      padding: 0.5rem;
+      font-size: 1.05rem;
+      background: #00ffe7;
+      color: #000;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .group input[type="file"] {
+      background: none;
+      color: #00ffe7;
+      padding: 0;
+    }
+    .group input[type="file"]::-webkit-file-upload-button {
+      visibility: hidden;
+    }
+    .group input[type="file"]::before {
+      content: "📂 Datei auswählen";
+      display: inline-block;
+      background: #00ffe7;
+      color: black;
+      padding: 0.5rem;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
+<style>
+  .layout {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+  .container {
+    flex: 0 0 460px;
+  }
+  .device-list {
+    font-size: 0.95rem;
+  }
+</style>
+</head>
+<body>
+  <div class="layout">
+  <div class="container">
+    <h1>🛡️ Device Sentinel – Dashboard</h1>
+
+    <div class="group">
+      <h2>🔍 Geräteaktionen</h2>
+      <button onclick="scanUSB()">🔌 USB-Geräte scannen</button>
+      <button onclick="scanNetwork()">🌐 Netzwerkgeräte scannen</button>
+      <input type="file" id="fileInput" accept=".json" />
+    </div>
+
+    <div class="group">
+      <h2>📤 Datenexport</h2>
+      <button onclick="exportDevicesCSV()">📄 Exportieren als CSV</button>
+      <button onclick="exportDevicesPDF()">🧾 Exportieren als PDF</button>
+    </div>
+
+    <div class="group">
+      <h2>🛡️ Whitelist-Verwaltung</h2>
+      <button onclick="exportWhitelist()">🔐 Whitelist exportieren</button>
+      <input type="file" accept=".json" onchange="importWhitelist(event)">
+    </div>
+
+    <div class="group">
+      <h2>🧠 Analyse & Filter</h2>
+      <button onclick="showNewDevices()">📌 Nur neue Geräte anzeigen</button>
+      <button onclick="showTimeline()">🕒 Zeitverlauf anzeigen</button>
+    </div>
+
+    </div>
+  <div id="device-list" class="device-list" style="flex: 1; max-height: 90vh; overflow-y: auto; padding-left: 2rem;"></div>
+</div>
+  </div>
+
+  <!-- Scripte -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="utils/vendors.js"></script>
+  <script src="utils/whitelist.js"></script>
+  <script src="utils/deviceHandler.js"></script>
+  <script src="utils/themeHandler.js"></script>
+  <script src="utils/networkScanner.js"></script>
+  <script src="utils/bluetoothHandler.js"></script>
+  <script src="utils/exporter.js"></script>
+  <script src="utils/timeline.js"></script>
+  <script src="utils/live.js"></script>
+  <script src="app.js"></script>
+  <script>startLiveUpdates();</script>
+
+  <script>
+    document.getElementById('fileInput').addEventListener('change', function (event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        try {
+          const data = JSON.parse(e.target.result);
+          localStorage.setItem("deviceLog", JSON.stringify(data));
+          displayImportedDevices(data);
+        } catch (err) {
+          alert("Fehler beim Einlesen der Datei.");
+        }
+      };
+      reader.readAsText(file);
+    });
+
+    function displayImportedDevices(devices) {
+      const list = document.getElementById('device-list');
+      list.innerHTML = '';
+      devices.forEach(device => {
+        if (device.mac === 'ff-ff-ff-ff-ff-ff' || device.ip?.startsWith('224.') || device.ip === '255.255.255.255') return;
+        const div = document.createElement('div');
+        div.innerHTML = `
+          <strong>Gerät:</strong> ${device.ip || 'USB'}<br/>
+          MAC: ${device.mac || '-'}<br/>
+          Typ: ${device.type || '-'}<br/>
+          Risiko: ${device.risk || '-'}<br/>
+          <small>${device.timestamp}</small>
+        `;
+        list.appendChild(div);
+      });
+    }
+  </script>
+</body>
+</html>
